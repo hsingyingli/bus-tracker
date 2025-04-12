@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr
 
 from app.dependencies.use_case import get_auth_use_case
-from app.use_cases.auth import AuthUseCaseInterface, RegisterUserError
+from app.use_cases.auth import (AuthUseCaseInterface, RegisterUserError,
+                                UserNotFoundError, UserPasswordMismatchError)
 
 router = APIRouter()
 
@@ -27,4 +29,30 @@ async def register(
         return JSONResponse(
             content={"detail": "User with this username already exists"},
             status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@router.post("/login")
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    auth_use_case: AuthUseCaseInterface = Depends(get_auth_use_case),
+):
+    try:
+        access_token = await auth_use_case.login(
+            username=form_data.username,
+            password=form_data.password,
+        )
+        return JSONResponse(
+            content={"access_token": access_token, "token_type": "bearer"},
+            status_code=status.HTTP_200_OK,
+        )
+    except UserNotFoundError:
+        return JSONResponse(
+            content={"detail": "User not found"},
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    except UserPasswordMismatchError:
+        return JSONResponse(
+            content={"detail": "Incorrect password"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
         )
