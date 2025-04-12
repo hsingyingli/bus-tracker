@@ -1,7 +1,7 @@
 import secrets
 from functools import lru_cache
 
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,7 +22,9 @@ class Settings(BaseSettings):
     ACCESS_SECRET_KEY: str = secrets.token_urlsafe(32)
     JWT_ALGORITHM: str = "HS256"
 
+    REDIS_URL: RedisDsn = RedisDsn("redis://localhost:6379/0")
 
+    # TDX settings
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
