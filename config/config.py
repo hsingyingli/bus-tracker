@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+from pydantic import PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -7,6 +8,13 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
+    DATABASE_URL: PostgresDsn = PostgresDsn(
+        "postgresql://test:testsecret@localhost:5432/bus"
+    )
+    DATABASE_MAX_POOL: int = 10
+    DATABASE_MIN_POOL: int = 1
+    DATABASE_MAX_QUERIES: int = 50000
+    DATABASE_MAX_INACTIVE_CONNECTION_LIFETIME: int = 300
 
 
 @lru_cache()
