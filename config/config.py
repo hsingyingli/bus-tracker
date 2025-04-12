@@ -1,3 +1,4 @@
+import secrets
 from functools import lru_cache
 
 from pydantic import PostgresDsn
@@ -15,6 +16,11 @@ class Settings(BaseSettings):
     DATABASE_MIN_POOL: int = 1
     DATABASE_MAX_QUERIES: int = 50000
     DATABASE_MAX_INACTIVE_CONNECTION_LIFETIME: int = 300
+
+    # JWT settings
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_SECRET_KEY: str = secrets.token_urlsafe(32)
+    JWT_ALGORITHM: str = "HS256"
 
 
 @lru_cache()
