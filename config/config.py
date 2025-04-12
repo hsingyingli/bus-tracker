@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     REDIS_URL: RedisDsn = RedisDsn("redis://localhost:6379/0")
 
     # TDX settings
+    TDX_CLIENT_ID: str = "your_client_id"
+    TDX_CLIENT_SECRET: str = "your_client_secret"
+
+
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
