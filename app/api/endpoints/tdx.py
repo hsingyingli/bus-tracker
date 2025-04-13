@@ -21,7 +21,7 @@ async def estimated_time_of_arrival(
     tdx_use_case: TdxUseCaseInterface = Depends(get_tdx_use_case),
 ):
     try:
-        response = tdx_use_case.estimated_time_of_arrival(city, route)
+        response = await tdx_use_case.estimated_time_of_arrival(city, route)
         return response
     except TdxAuthenticateError:
         return JSONResponse(
