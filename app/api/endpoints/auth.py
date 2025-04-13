@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi_limiter.depends import RateLimiter
 from pydantic import BaseModel, EmailStr
 
 from app.dependencies.use_case import get_auth_use_case
@@ -16,7 +17,13 @@ class RegisterForm(BaseModel):
     password: str
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[
+        Depends(RateLimiter(times=5, minutes=1)),
+    ],
+)
 async def register(
     form_data: RegisterForm,
     auth_use_case: AuthUseCaseInterface = Depends(get_auth_use_case),
@@ -32,7 +39,12 @@ async def register(
         )
 
 
-@router.post("/login")
+@router.post(
+    "/login",
+    dependencies=[
+        Depends(RateLimiter(times=5, minutes=1)),
+    ],
+)
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     auth_use_case: AuthUseCaseInterface = Depends(get_auth_use_case),
