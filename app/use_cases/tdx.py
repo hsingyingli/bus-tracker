@@ -2,9 +2,13 @@ from abc import ABC, abstractmethod
 from uuid import uuid4
 
 from asyncpg import Connection
+from celery.schedules import crontab
+from redbeat import RedBeatSchedulerEntry
+
 from app.repositories.tdx_repository import TdxRepositoryInterface
 from app.schemas.user import User
 from app.services.tdx import TdxClient
+from worker.celery import celery_app
 
 
 class TdxUseCaseInterface(ABC):
@@ -66,3 +70,11 @@ class TdxUseCase(TdxUseCaseInterface):
                 schedule_name,
             )
 
+            entry = RedBeatSchedulerEntry(
+                name=schedule_name,
+                task="worker.tasks.subscribe_arrival",
+                schedule=crontab(minute="*/1"),  # 每分鐘
+                args=[schedule_name],
+                app=celery_app,
+            )
+            entry.save()

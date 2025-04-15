@@ -29,6 +29,21 @@ class Settings(BaseSettings):
     TDX_CLIENT_SECRET: str = "your_client_secret"
 
 
+class WorkerSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+    )
+
+    BROKER_URL: str = "redis://localhost:6379/1"
+    RESULT_BACKEND: str = "redis://localhost:6379/1"
+    BEAT_URL: str = "redis://localhost:6379/2"
+
+
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+
+
+@lru_cache()
+def get_worker_settings() -> WorkerSettings:
+    return WorkerSettings()
