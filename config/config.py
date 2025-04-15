@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     TDX_CLIENT_ID: str = "your_client_id"
     TDX_CLIENT_SECRET: str = "your_client_secret"
 
+    EMAIL_PASSWORD: str = "your_google_mail_app_password"
+    EMAIL_ADDRESS: str = "your_google_mail_address"
+
 
 class WorkerSettings(BaseSettings):
     model_config = SettingsConfigDict(

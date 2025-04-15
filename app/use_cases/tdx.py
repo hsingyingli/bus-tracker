@@ -74,7 +74,15 @@ class TdxUseCase(TdxUseCaseInterface):
                 name=schedule_name,
                 task="worker.tasks.subscribe_arrival",
                 schedule=crontab(minute="*/1"),  # 每分鐘
-                args=[schedule_name],
+                args=[
+                    city,
+                    route_id,
+                    direction,
+                    target_stop_uid,
+                    notify_before_minutes,
+                    email,
+                    schedule_name,
+                ],
                 app=celery_app,
             )
             entry.save()
