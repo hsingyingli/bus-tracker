@@ -4,8 +4,8 @@ from typing import Optional
 import httpx
 from redis.exceptions import RedisError
 
-from app.infra.redis import redis_client
 from config.config import get_settings
+from infra.redis import redis_client
 
 settings = get_settings()
 

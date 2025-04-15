@@ -1,4 +1,4 @@
-from app.infra.database import database
+from infra.database import database
 
 
 async def get_db_connection():

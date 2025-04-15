@@ -5,9 +5,9 @@ from fastapi.responses import JSONResponse
 from fastapi_limiter import FastAPILimiter
 
 from app.api.routers import api_router
-from app.infra.database import database
-from app.infra.redis import redis_client
 from config.config import get_settings
+from infra.database import database
+from infra.redis import redis_client
 
 settings = get_settings()
 
