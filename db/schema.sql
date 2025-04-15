@@ -23,6 +23,47 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: tdx_subscriptions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tdx_subscriptions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    city character varying(50) NOT NULL,
+    route_id character varying(50) NOT NULL,
+    direction integer NOT NULL,
+    target_stop_uid character varying(50) NOT NULL,
+    notify_before_minutes integer NOT NULL,
+    email character varying(100),
+    is_active boolean DEFAULT true,
+    schedule_name character varying(255),
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT tdx_subscriptions_direction_check CHECK ((direction = ANY (ARRAY[0, 1])))
+);
+
+
+--
+-- Name: tdx_subscriptions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.tdx_subscriptions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: tdx_subscriptions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.tdx_subscriptions_id_seq OWNED BY public.tdx_subscriptions.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -57,6 +98,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: tdx_subscriptions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tdx_subscriptions ALTER COLUMN id SET DEFAULT nextval('public.tdx_subscriptions_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -69,6 +117,14 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: tdx_subscriptions tdx_subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tdx_subscriptions
+    ADD CONSTRAINT tdx_subscriptions_pkey PRIMARY KEY (id);
 
 
 --
@@ -96,6 +152,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: tdx_subscriptions tdx_subscriptions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tdx_subscriptions
+    ADD CONSTRAINT tdx_subscriptions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -105,4 +169,5 @@ ALTER TABLE ONLY public.users
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20250412054738');
+    ('20250412054738'),
+    ('20250413132632');
